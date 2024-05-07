@@ -19,6 +19,11 @@ const config = {
       },
     },
     extend: {
+      colors: {
+        primary: {
+          default: '#AA0029'
+        },
+      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },

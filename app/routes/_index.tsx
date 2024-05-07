@@ -1,58 +1,63 @@
-import type { MetaFunction } from "@remix-run/node";
-import { Badge } from "@/components/ui/badge";
+import type { MetaFunction, } from "@remix-run/node";
+import { Link } from "@remix-run/react";
 import { Button } from "@/components/ui/button";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion"
+
+import { Logo } from '../assets/svg'
+import { useEffect } from "react";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "New Remix App" },
-    { name: "description", content: "Welcome to Remix!" },
+    { title: "Easy Menu" },
+    { name: "description", content: "Easily create your business menu!" },
   ];
 };
 
 export default function Index() {
+
+  // useEffect(() => {
+  //   async function getUser() {
+  //     try {
+  //       // console.log(process.env.API_URL)
+  //       const response = await fetch(`${process.env.API_URL}/user`, {
+  //         mode: 'cors',
+  //         credentials: 'include',
+  //         method: 'GET'
+  //       })
+        
+  //       console.log('### code in use effect')
+  //       console.log(await response.headers)
+  //       console.log(new Date(),await response.text())
+  //     } catch(err) {
+  //       console.log(err)
+  //     }
+  //   }
+
+  //   getUser()
+  // }, [])
+
   return (
     <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>
-      <h1>Welcome to Remix</h1><Badge variant="secondary">Secondary</Badge><Button>test</Button>
-      <Accordion type="single" collapsible>
-      <AccordionItem value="item-1">
-          <AccordionTrigger>Is it accessible?</AccordionTrigger>
-          <AccordionContent>
-            Yes. It adheres to the WAI-ARIA design pattern.
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
-
-      <ul>
-        <li>
-          <a
-            target="_blank"
-            href="https://remix.run/tutorials/blog"
-            rel="noreferrer"
-          >
-            15m Quickstart Blog Tutorial
-          </a>
-        </li>
-        <li>
-          <a
-            target="_blank"
-            href="https://remix.run/tutorials/jokes"
-            rel="noreferrer"
-          >
-            Deep Dive Jokes App Tutorial
-          </a>
-        </li>
-        <li>
-          <a target="_blank" href="https://remix.run/docs" rel="noreferrer">
-            Remix Docs
-          </a>
-        </li>
-      </ul>
+      <div className="text-primary-default w-full flex justify-center py-6">
+        <Link to="/">
+          <Logo />
+        </Link>
+      </div>
+      <div>
+        <div className="px-3 md:container md:mx-auto max-w-2xl py-20 md:text-center">
+          <h1 className="text-primary-default font-bold text-3xl">Easily create your business menu</h1>
+          <p className="pt-3 pb-5">With easy menu you can better server your clients with a custom digital menu. Create your account, add your menu items, generate a qr code and you are done.</p>
+          <div className="pt-4 flex md:justify-center">
+            <Button variant="default" className="mr-3" size="lg">Register</Button>
+            <Button onClick={() => window.location.href = "/login" } variant="outline" size="lg">Login</Button>
+          </div>
+        </div>
+      </div>
     </div>
   );
+}
+
+export async function loader() {
+  console.log('## loader hit')
+
+  return null
 }
