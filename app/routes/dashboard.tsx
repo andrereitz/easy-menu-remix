@@ -1,11 +1,17 @@
-import { Link, Outlet } from "@remix-run/react";
+import { Link, Outlet, useActionData } from "@remix-run/react";
 import { Logo } from "~/assets/svg";
 import { Navbar } from "@/components/Navbar";
-import { LoaderFunctionArgs, redirect } from "@remix-run/node";
+import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from "@remix-run/node";
 import { BusinessInfo, MenuItems } from "@/components/dashboard";
 import { DashboardData } from "@/types/dashboard";
+import { NewMenuItem } from "@/components/dashboard";
+import { AddMenuItem, DeleteMenuItem, NewMenuItemPayload } from "~/reducers/dashboardReducers";
 
 export default function dashboard() {
+  const actionData = useActionData();
+
+  console.log('### action data', actionData)
+
   return (
     <>
       <div className="container max-w-[600px]">
@@ -18,6 +24,7 @@ export default function dashboard() {
       </div>
       <BusinessInfo />
       <MenuItems />
+      <NewMenuItem />
       <Outlet />
     </>
   )
@@ -67,4 +74,28 @@ export async function loader({request}: LoaderFunctionArgs) {
   }
 
   return pageData
+}
+
+export async function action({ request, response }: ActionFunctionArgs) {
+  const formData = await request.formData();
+  const values = Object.fromEntries(formData);
+  const action = formData.get('action');
+
+  if (!action) return;
+
+  switch(action) {
+    case 'add':
+      const add = await AddMenuItem(formData, request);
+      console.log('### ad values', values)
+
+      return json(add);
+    case 'delete':
+      const del = await DeleteMenuItem(String(values.id), request);
+      console.log('### delete id', values)
+
+      return json(del)
+
+    default:
+      return json({ message: 'No action provided', status: 'warning' })
+  }
 }

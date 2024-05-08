@@ -3,7 +3,6 @@ import { Link } from "@remix-run/react";
 import { Button } from "@/components/ui/button";
 
 import { Logo } from '../assets/svg'
-import { useEffect } from "react";
 
 export const meta: MetaFunction = () => {
   return [
@@ -13,27 +12,6 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Index() {
-
-  useEffect(() => {
-    async function getUser() {
-      try {
-        // console.log(process.env.API_URL)
-        const response = await fetch(`http://localhost:8000/item/all`, {
-          mode: 'cors',
-          credentials: 'include',
-          method: 'GET'
-        })
-        
-        console.log('### code in use effect')
-        console.log(await response.headers)
-        console.log(new Date(),await response.text())
-      } catch(err) {
-        console.log(err)
-      }
-    }
-
-    getUser()
-  }, [])
 
   return (
     <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>
@@ -56,8 +34,3 @@ export default function Index() {
   );
 }
 
-export async function loader() {
-  console.log('## loader hit')
-
-  return null
-}
