@@ -30,7 +30,7 @@ export function Navbar() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline"><Menu /></Button>
+        <Button variant="ghost"  className="text-primary-default"><Menu size={28} /></Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
         <DropdownMenuLabel>Your business</DropdownMenuLabel>

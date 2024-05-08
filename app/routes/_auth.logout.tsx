@@ -1,4 +1,4 @@
-import { redirect } from "@remix-run/node"
+import { LoaderFunctionArgs, redirect } from "@remix-run/node"
 
 export default function Logout() {
   return(
@@ -11,23 +11,22 @@ export default function Logout() {
   )
 }
 
-export async function loader(data: any) {
+export async function loader(data: LoaderFunctionArgs) {
   try {
-    console.log(process.env.API_URL)
+    const cookie = data.request.headers.get('cookie');
+    if(!cookie) throw "Could not get cookie data";
+
     const response = await fetch(`${process.env.API_URL}/logout`, {
       mode: 'cors',
       credentials: 'include',
       method: 'POST',
-      headers: { Cookie: data.request.headers.get('cookie') }
+      headers: { Cookie: cookie }
     })
-
-    console.log('### loader data', data.request.headers.get('cookie'))
     
     if (response.status == 200) {
       const cookies = response.headers.get('set-cookie');
-      console.log('### request cookies', cookies)
 
-      if(!cookies) throw "No Cookie Found"
+      if(!cookies) throw "Response cookie not found"
 
       return redirect("/", {
         headers: {
@@ -38,24 +37,6 @@ export async function loader(data: any) {
     } else {
       throw response;
     }
-  } catch(err) {
-    console.log(err)
-  }
-
-  return null
-}
-
-export async function action() {
-  try {
-    console.log(process.env.API_URL)
-    const response = await fetch(`${process.env.API_URL}/user`, {
-      credentials: 'include',
-      method: 'POST'
-    })
-    
-
-    console.log(await response.headers)
-    console.log(await response.text())
   } catch(err) {
     console.log(err)
   }

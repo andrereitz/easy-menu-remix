@@ -14,26 +14,26 @@ export const meta: MetaFunction = () => {
 
 export default function Index() {
 
-  // useEffect(() => {
-  //   async function getUser() {
-  //     try {
-  //       // console.log(process.env.API_URL)
-  //       const response = await fetch(`${process.env.API_URL}/user`, {
-  //         mode: 'cors',
-  //         credentials: 'include',
-  //         method: 'GET'
-  //       })
+  useEffect(() => {
+    async function getUser() {
+      try {
+        // console.log(process.env.API_URL)
+        const response = await fetch(`http://localhost:8000/item/all`, {
+          mode: 'cors',
+          credentials: 'include',
+          method: 'GET'
+        })
         
-  //       console.log('### code in use effect')
-  //       console.log(await response.headers)
-  //       console.log(new Date(),await response.text())
-  //     } catch(err) {
-  //       console.log(err)
-  //     }
-  //   }
+        console.log('### code in use effect')
+        console.log(await response.headers)
+        console.log(new Date(),await response.text())
+      } catch(err) {
+        console.log(err)
+      }
+    }
 
-  //   getUser()
-  // }, [])
+    getUser()
+  }, [])
 
   return (
     <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>

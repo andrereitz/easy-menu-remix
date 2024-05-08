@@ -1,13 +1,11 @@
-import { Link, json, useLoaderData } from "@remix-run/react";
+import { Link, Outlet } from "@remix-run/react";
 import { Logo } from "~/assets/svg";
 import { Navbar } from "@/components/Navbar";
-import { LoaderFunctionArgs } from "@remix-run/node";
+import { LoaderFunctionArgs, redirect } from "@remix-run/node";
+import { BusinessInfo, MenuItems } from "@/components/dashboard";
+import { DashboardData } from "@/types/dashboard";
 
 export default function dashboard() {
-  const loaderData = useLoaderData();
-
-  console.log(loaderData)
-
   return (
     <>
       <div className="container max-w-[600px]">
@@ -18,19 +16,20 @@ export default function dashboard() {
           <Navbar />
         </div>
       </div>
-      <div className="w-full py-5 bg-gray-50">
-        <div className="container max-w-[980px]">
-          menu items and business data
-        </div>
-      </div>
+      <BusinessInfo />
+      <MenuItems />
+      <Outlet />
     </>
   )
 }
 
 export async function loader({request}: LoaderFunctionArgs) {
+  let pageData = { user: {}, config: {}} as DashboardData;
+  pageData.config.api_url = process.env.API_URL
+
   try {
     const cookie = request.headers.get('cookie');
-    if(!cookie) return;
+    if(!cookie) return redirect("/");
 
     const resp = await fetch(`${process.env.API_URL}/user`, {
       credentials: 'include',
@@ -40,18 +39,32 @@ export async function loader({request}: LoaderFunctionArgs) {
 
     if(resp.status === 200) {
       const json = await resp.json();
-      console.log(json)
 
-      return json;
+      json.business_logo = `${process.env.API_URL}/${json.business_logo}`;
+      json.business_qr = json.business_url ? `${process.env.API_URL}/static/qrcodes/${json.id}.png` : null;
+      pageData.user = json
 
     } else {
       throw resp;
     }
 
+    const categoryReponse = await fetch(`${process.env.API_URL}/category/all`, {
+      credentials: 'include',
+      mode: 'cors',
+      headers: { Cookie: cookie }
+    })
+
+    if(resp.status === 200) {
+      const json = await categoryReponse.json();
+
+      pageData.categories = json
+    } else {
+      throw resp;
+    }
 
   } catch(err) {
     console.log(err)
   }
 
-  return null
+  return pageData
 }

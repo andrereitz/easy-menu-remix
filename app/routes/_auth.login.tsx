@@ -4,6 +4,7 @@ import { Logo } from "~/assets/svg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ShieldAlert } from "lucide-react";
+import { getToken } from "@/lib/utils";
 
 export const meta: MetaFunction = () => {
   return [
@@ -38,8 +39,7 @@ export default function Login() {
 }
 
 export function loader({ request }: LoaderFunctionArgs) {
-  const cookies = request.headers.get('cookie');
-  const token = cookies?.split(';').filter(cookie => cookie.startsWith('jwt-token'))
+  const token = getToken(request)
 
   if(token && token.length > 0) {
     return redirect('/dashboard')
@@ -62,7 +62,7 @@ export async function action({request}: ActionFunctionArgs): Promise<Response | 
     if (resp.status == 200) {
       const cookies = resp.headers.get('set-cookie');
 
-      if(!cookies) throw "No Cookie Found"
+      if(!cookies) throw "Response cookie not found";
 
       return redirect("/dashboard", {
         headers: {
