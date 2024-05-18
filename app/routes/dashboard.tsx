@@ -1,16 +1,18 @@
-import { Link, Outlet, useActionData } from "@remix-run/react";
+import { Link, Outlet, useActionData, useLoaderData } from "@remix-run/react";
 import { Logo } from "~/assets/svg";
-import { Navbar } from "@/components/Navbar";
+import { Menu } from "@/components/Menu";
 import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from "@remix-run/node";
 import { BusinessInfo, MenuItems } from "@/components/dashboard";
 import { DashboardData } from "@/types/dashboard";
-import { NewMenuItem } from "@/components/dashboard";
-import { AddMenuItem, DeleteMenuItem, NewMenuItemPayload } from "~/reducers/dashboardReducers";
+import { ActionsMenu } from "@/components/dashboard";
+import { AddCategory, AddMenuItem, DeleteMenuItem } from "~/actions/dashboardActions";
 
 export default function dashboard() {
   const actionData = useActionData();
+  const loaderData = useLoaderData<DashboardData>();
 
   console.log('### action data', actionData)
+  console.log('### loader data', loaderData)
 
   return (
     <>
@@ -19,12 +21,14 @@ export default function dashboard() {
           <Link to="/" className="text-primary-default">
             <Logo className="max-w-" />
           </Link>
-          <Navbar />
+          <Menu />
         </div>
       </div>
-      <BusinessInfo />
+      {loaderData.user.id && (
+        <BusinessInfo />
+      )}
       <MenuItems />
-      <NewMenuItem />
+      <ActionsMenu />
       <Outlet />
     </>
   )
@@ -61,16 +65,17 @@ export async function loader({request}: LoaderFunctionArgs) {
       headers: { Cookie: cookie }
     })
 
-    if(resp.status === 200) {
+    if(categoryReponse.status === 200) {
       const json = await categoryReponse.json();
 
       pageData.categories = json
     } else {
-      throw resp;
+      throw categoryReponse;
     }
 
   } catch(err) {
     console.log(err)
+    throw err
   }
 
   return pageData
@@ -86,14 +91,18 @@ export async function action({ request, response }: ActionFunctionArgs) {
   switch(action) {
     case 'add':
       const add = await AddMenuItem(formData, request);
-      console.log('### ad values', values)
+      console.log('### add values', values)
 
       return json(add);
     case 'delete':
       const del = await DeleteMenuItem(String(values.id), request);
-      console.log('### delete id', values)
 
       return json(del)
+    case 'addCategory':
+      console.log('### category add', values)
+      const addCategory = await AddCategory(formData, request);
+
+      return addCategory
 
     default:
       return json({ message: 'No action provided', status: 'warning' })

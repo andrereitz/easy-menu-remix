@@ -3,7 +3,6 @@ import { PropsWithChildren } from "react";
 import { DashboardData, UserInfo } from "../../types/dashboard";
 import { Link, useLoaderData } from "@remix-run/react";
 import { Button } from "../ui/button";
-import { loader } from "~/routes/_auth.login";
 
 export default function BusinessInfo() {
   const loaderData = useLoaderData<DashboardData>();

@@ -1,0 +1,56 @@
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { DashboardData } from "@/types/dashboard";
+import { Form, useLoaderData } from "@remix-run/react";
+import { BookmarkPlus } from "lucide-react";
+import { useEffect, useRef } from "react";
+
+export default function({
+  open,
+  onClose,
+} : {
+  open: boolean,
+  onClose: () => void
+}) {
+  const { categories } = useLoaderData<DashboardData>();
+  const inputRef = useRef<HTMLInputElement | null>(null)
+
+  useEffect(() => {
+    if(inputRef.current) {
+      inputRef.current.value = ""
+    }
+  })
+
+  return(
+    <Dialog open={open} onOpenChange={() => onClose()}>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Add category</DialogTitle>
+        </DialogHeader>
+        <Form method="POST">
+          <Input required type="text" placeholder="Title" name="title" ref={inputRef}></Input>
+          {categories && (
+            <div className="mt-5 flex gap-2 flex-wrap">
+              {categories.map((category) => (
+                <Badge variant="secondary" key={category.id}>{category.title}</Badge>
+              ))}
+            </div>
+          )}
+          <DialogFooter>
+            <Button 
+              type="submit" 
+              size="lg" 
+              className="mt-5" 
+              name="action" 
+              value="addCategory"
+            >
+              <BookmarkPlus className="mr-2" />Add Category
+            </Button>
+          </DialogFooter>
+        </Form>
+      </DialogContent>
+    </Dialog>
+  )
+}

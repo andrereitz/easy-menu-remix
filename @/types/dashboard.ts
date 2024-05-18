@@ -19,6 +19,11 @@ export interface CategoryData {
   title: string
 }
 
+export interface CategoryDataEdit {
+  id: number,
+  title: string
+}
+
 export interface DashboardData {
   user: UserInfo,
   config: AppConfig,

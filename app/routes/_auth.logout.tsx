@@ -2,12 +2,7 @@ import { LoaderFunctionArgs, redirect } from "@remix-run/node"
 
 export default function Logout() {
   return(
-    <>
-      <div>Logging you out...</div>
-      <form method="post">
-        <button type="submit">Logout</button>
-      </form>
-    </>
+    <div>Logging you out...</div>
   )
 }
 

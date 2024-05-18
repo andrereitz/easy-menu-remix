@@ -7,16 +7,17 @@ import { DashboardData } from "@/types/dashboard";
 import { ListPlusIcon, PlusIcon } from "lucide-react";
 import { DialogHeader, DialogFooter, Dialog, DialogTrigger, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
-export default function NewMenuItem() {
+export default function NewMenuItem({
+  open,
+  onClose,
+} : {
+  open: boolean,
+  onClose: () => void
+}) {
   const { categories } = useLoaderData<DashboardData>();
 
   return(
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="default" className="rounded-full fixed right-[20px] bottom-[20px] md:right-[40px] md:bottom-[40px]">
-          <PlusIcon className="mr-2" /> New Item
-        </Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={() => onClose()}>
       <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Add New Item</DialogTitle>

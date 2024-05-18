@@ -24,9 +24,11 @@ export default function MenuItems() {
       if(resp.status === 200) {
         const json = await resp.json();
         setItems(json)
+      } else {
+        throw resp
       }
     } catch(err) {
-      console.log(err)
+      console.log('menu items error', err)
     } finally {
       setLoading(false)
     }
@@ -39,7 +41,7 @@ export default function MenuItems() {
   return(
     <div className="container py-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 p-4 gap-4">
       {loading && 'Loading...'}
-      {!loading && items.length && (
+      {!loading && items.length ? (
         items.map((item: MenuItem) => (
           <div key={item.id} className="flex flex-col rounded-md bg-slate-100">
             {item.mediaid ? (
@@ -70,7 +72,9 @@ export default function MenuItems() {
             </div>
           </div>
         )
-      ))}
+      )) : (
+        'Error fetching menu items'
+      )}
     </div>
   )
 }
