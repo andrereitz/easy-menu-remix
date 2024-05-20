@@ -1,10 +1,9 @@
 import { DashboardData, MenuItem } from "@/types/dashboard";
 import { AspectRatio } from "@radix-ui/react-aspect-ratio";
-import { Form, useLoaderData, useNavigate } from "@remix-run/react";
-import { Edit2, Tag, Trash } from "lucide-react";
+import { useLoaderData } from "@remix-run/react";
+import { Edit2, Tag } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { DeleteAlert } from "./DeleteItemAlert";
 import MenuItemEdit from "./MenuItemEdit";
 
@@ -43,12 +42,12 @@ export default function MenuItems() {
   return(
     <div className="container py-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 p-4 gap-4">
       {loading && 'Loading...'}
-      {!loading && items.length ? (
+      {!loading && items.length && (
         items.map((item: MenuItem) => (
           <div key={item.id} className="flex flex-col rounded-md bg-slate-100">
             {item.mediaid ? (
               <AspectRatio ratio={16/9} className="px-2 pt-2">
-                <img src={`${config.api_url}/item/image/${item.mediaid}`} className="object-fill w-full h-full rounded-md" />
+                <img src={`${config.api_url}/item/image/${item.mediaid}`} className="object-cover w-full h-full rounded-md" />
               </AspectRatio>
             ) : (
               <AspectRatio ratio={16/9} className="bg-muted"></AspectRatio>
@@ -80,9 +79,11 @@ export default function MenuItems() {
             </div>
           </div>
         )
-      )) : (
+      ))}
+      {!loading && items.length < 0 && (
         'Error fetching menu items'
       )}
+      
       {edittingItem && (
         <MenuItemEdit open={editItemOpen} onClose={() => setEditItemOpen(false)} data={edittingItem} />
       )}

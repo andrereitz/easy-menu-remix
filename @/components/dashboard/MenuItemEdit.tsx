@@ -6,8 +6,11 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { Textarea } from "@/components/ui/textarea";
 import { DashboardData, MenuItem } from "@/types/dashboard";
 import { Form, useLoaderData } from "@remix-run/react";
-import { Delete, ListPlusIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Delete, ListEnd, X } from "lucide-react";
+import { FormEvent, useEffect, useRef, useState } from "react";
+import { Label } from "@/components/ui/label";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { LoadingSpinner } from "../LoadingSpinner";
 
 export default function({
   open,
@@ -18,10 +21,13 @@ export default function({
   onClose: () => void,
   data: MenuItem
 }) {
-  const { categories } = useLoaderData<DashboardData>();
-  const [ editCategory, setEditCategory ] = useState<boolean>(false)
+  const { categories, config } = useLoaderData<DashboardData>();
+  const [ editCategory, setEditCategory ] = useState<boolean>(false);
+  const [ imageLoading, setImageLoading ] = useState<boolean>(false)
+  const [ imageId, setImageId ] = useState<number | undefined>(data.mediaid)
+  const imageFieldRef = useRef<any>(null)
 
-  const itemCategory = categories.find(category => category.id === data.category)
+  const itemCategory = categories.find(category => category.id === data.category);
     
   useEffect(() => {
     if(!itemCategory) {
@@ -30,6 +36,61 @@ export default function({
       setEditCategory(false)
     }
   }, [data, open])
+
+  async function uploadFile(e: FormEvent) {
+    const formData = new FormData();
+    formData.append('item_image', imageFieldRef.current.files[0]);
+
+    setImageLoading(true)
+
+    try {
+      const upload = await fetch(`${config.api_url}/item/image/add/${data.id}`, {
+        mode: 'cors',
+        method: 'POST',
+        credentials: 'include',
+        body: formData
+      })
+
+      if(upload.status === 200) {
+        const uploadJson = await upload.json()
+
+        setImageId(uploadJson.data)
+      } else {
+        throw upload;
+      }
+
+      console.log(upload)
+
+    } catch(err) {
+      console.log(err)
+    } finally {
+      setImageLoading(false)
+    }
+  }
+
+  async function removeImage() {
+    setImageLoading(true);
+
+    try {
+      const remove = await fetch(`${config.api_url}/item/image/remove/${data.id}`, {
+        mode: 'cors',
+        method: 'POST',
+        credentials: 'include'
+      })
+
+      if(remove.status === 200) {
+        setImageId(undefined)
+
+      } else {
+        throw remove;
+      }
+
+    } catch(err) {
+      console.log(err)
+    } finally {
+      setImageLoading(false)
+    }
+  }
   
   return(
     <Dialog open={open} onOpenChange={() => onClose()}>
@@ -40,10 +101,43 @@ export default function({
               Edit {data.title} details.
             </DialogDescription>
           </DialogHeader>
+          {imageId && !imageLoading && (
+            <div className="relative">
+              <AspectRatio ratio={16/9} className="px-2 pt-2">
+                <img src={`${config.api_url}/item/image/${imageId}`} className="object-cover w-full h-full rounded-md" />
+              </AspectRatio>
+              <Badge 
+                className="absolute cursor-pointer top-0 right-0 h-7 w-7 justify-center items-center p-1"
+                onClick={removeImage}
+              >
+                <X size={22} />
+              </Badge>
+            </div>
+          )}
+          
+          {!imageId && !imageLoading && (
+            <Form method="POST">
+              <Input id="image" type="file" onChange={uploadFile} ref={imageFieldRef} />
+            </Form>
+          )}
+
+          {imageLoading && (
+            <LoadingSpinner />
+          )}
           <Form method="POST" reloadDocument>
-            <Input type="text" placeholder={data.title} name="title"></Input>
-            <Textarea placeholder={data.description} name="description" className="mt-3"></Textarea>
-            <Input type="text" placeholder={String(data.price)} name="price"></Input>
+            <Input type="hidden" name="id" value={data.id} />
+            <div className="grid w-full max-w-sm items-center">
+              <Label htmlFor="title">Title</Label>
+              <Input type="text" defaultValue={data.title} name="title" id="title"></Input>
+            </div>
+            <div className="grid w-full max-w-sm items-center mt-4">
+              <Label htmlFor="description">Description</Label>
+              <Textarea defaultValue={data.description} name="description" id="description" className="mt-3"></Textarea>
+            </div>
+            <div className="grid w-full max-w-sm items-center mt-4">
+              <Label htmlFor="price">Price</Label>
+              <Input type="text" defaultValue={String(data.price)} name="price" id="price" required></Input>
+            </div>
             {!editCategory && (
               <Badge 
                 variant="outline" 
@@ -71,8 +165,8 @@ export default function({
               </div>
             )}
           <DialogFooter>
-            <Button type="submit" size="lg" className="mt-5" name="action" value="add">
-              <ListPlusIcon className="mr-2" />Add Item
+            <Button type="submit" size="lg" className="mt-5" name="action" value="edit">
+              <ListEnd className="mr-2" />Save Item
             </Button>
           </DialogFooter>
         </Form>

@@ -3,7 +3,7 @@ import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from "@remix-r
 import { BusinessInfo, MenuItems } from "@/components/dashboard";
 import { DashboardData } from "@/types/dashboard";
 import { ActionsMenu } from "@/components/dashboard";
-import { AddCategory, AddMenuItem, DeleteMenuItem } from "~/actions/dashboardActions";
+import { AddCategory, AddMenuItem, DeleteMenuItem, EditMenuItem } from "~/actions/dashboardActions";
 import { Navbar } from "@/components/Navbar";
 
 export default function dashboard() {
@@ -85,10 +85,18 @@ export async function action({ request, response }: ActionFunctionArgs) {
       const add = await AddMenuItem(formData, request);
 
       return json(add);
+
     case 'delete':
       const del = await DeleteMenuItem(String(values.id), request);
 
-      return json(del)
+      return json(del);
+
+    case 'edit':
+      const edit = await EditMenuItem(String(values.id), formData, request);
+      console.log('### values', values)
+
+      return json(edit);
+
     case 'addCategory':
       const addCategory = await AddCategory(formData, request);
 

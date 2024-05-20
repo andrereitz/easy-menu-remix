@@ -60,6 +60,24 @@ export async function DeleteMenuItem(payload: string, request: Request) {
   }
 }
 
+export async function EditMenuItem(id: string, payload: FormData, request: Request) {
+  const cookie = request.headers.get('cookie');
+  if(!cookie) throw "Could not get cookie data";
+
+  try {
+    const resp = await fetch(`${process.env.API_URL}/item/edit/${id}`, {
+      method: 'POST',
+      body: payload,
+      credentials: 'include',
+      headers: {
+        Cookie: cookie
+      }
+    })
+  } catch(err) {
+
+  }
+}
+
 export async function AddCategory(payload: FormData, request: Request) {
   const cookie = request.headers.get('cookie');
   if(!cookie) throw "Could not get cookie data";
