@@ -1,11 +1,10 @@
-import { Link, Outlet, useActionData, useLoaderData } from "@remix-run/react";
-import { Logo } from "~/assets/svg";
-import { Menu } from "@/components/Menu";
+import { Outlet, useActionData, useLoaderData } from "@remix-run/react";
 import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from "@remix-run/node";
 import { BusinessInfo, MenuItems } from "@/components/dashboard";
 import { DashboardData } from "@/types/dashboard";
 import { ActionsMenu } from "@/components/dashboard";
 import { AddCategory, AddMenuItem, DeleteMenuItem } from "~/actions/dashboardActions";
+import { Navbar } from "@/components/Navbar";
 
 export default function dashboard() {
   const actionData = useActionData();
@@ -16,14 +15,7 @@ export default function dashboard() {
 
   return (
     <>
-      <div className="container max-w-[600px]">
-        <div className="w-full flex justify-between py-3">
-          <Link to="/" className="text-primary-default">
-            <Logo className="max-w-" />
-          </Link>
-          <Menu />
-        </div>
-      </div>
+      <Navbar />
       {loaderData.user.id && (
         <BusinessInfo />
       )}
@@ -91,7 +83,6 @@ export async function action({ request, response }: ActionFunctionArgs) {
   switch(action) {
     case 'add':
       const add = await AddMenuItem(formData, request);
-      console.log('### add values', values)
 
       return json(add);
     case 'delete':
@@ -99,7 +90,6 @@ export async function action({ request, response }: ActionFunctionArgs) {
 
       return json(del)
     case 'addCategory':
-      console.log('### category add', values)
       const addCategory = await AddCategory(formData, request);
 
       return addCategory

@@ -25,17 +25,21 @@ export default function({
           <Input type="hidden" value={data ? data.id : 0} name="id"></Input>
           <Input type="text" placeholder={data ? data.title : ''} name="title"></Input>
           <DialogFooter className="flex items-center gap-3 mt-5">
-            <Button
-              variant="destructive"
-            >
-              <Trash2 className="mr-2" /> Delete Category
-            </Button>
             <Button 
               type="submit" 
               name="action" 
               value="edit"
+              className="order-1"
             >
               <BookmarkCheck className="mr-2" /> Save Category
+            </Button>
+            <Button
+              variant="destructive"
+              name="action"
+              value="delete"
+              className="order-0"
+            >
+              <Trash2 className="mr-2" /> Delete Category
             </Button>
           </DialogFooter>
         </Form>

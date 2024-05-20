@@ -1,12 +1,11 @@
-import { Link, redirect, useLoaderData } from "@remix-run/react";
-import { Logo } from "~/assets/svg";
+import { redirect, useLoaderData } from "@remix-run/react";
 import { CategoryData } from "@/types/dashboard";
-import { Menu } from "@/components/Menu";
 import { LoaderFunctionArgs, json } from "@remix-run/node";
 import { Badge } from "@/components/ui/badge";
 import { CategoryEdit } from "@/components/dashboard";
 import { useState } from "react";
-import { EditCategory } from "~/actions/dashboardCategoriesActions";
+import { DeleteCategory, EditCategory } from "~/actions/dashboardCategoriesActions";
+import { Navbar } from "@/components/Navbar";
 
 export default function dashboard() {
   const categories = useLoaderData<CategoryData[]>();
@@ -14,20 +13,15 @@ export default function dashboard() {
 
   return (
     <>
-      <div className="container max-w-[600px]">
-        <div className="w-full flex justify-between py-3">
-          <Link to="/" className="text-primary-default">
-            <Logo className="max-w-" />
-          </Link>
-          <Menu />
+      <Navbar />
+      <div className="container flex justify-center mt-5">
+        <div className="flex gap-2 max-w-[600px]">
+          {categories.map((category: CategoryData) => (
+            <Badge key={category.id} onClick={() => setCategoryEdit(category)} className="cursor-pointer p-2">
+              {category.title}
+            </Badge>
+          ))}
         </div>
-      </div>
-      <div>
-        {categories.map((category: CategoryData) => (
-          <Badge key={category.id} onClick={() => setCategoryEdit(category)}>
-            {category.title}
-          </Badge>
-        ))}
       </div>
       <CategoryEdit open={categoryEdit != null} onClose={() => setCategoryEdit(null)} data={categoryEdit} />
     </>
@@ -69,7 +63,11 @@ export async function action({ request }: LoaderFunctionArgs) {
       const edit = await EditCategory(formData, String(values.id), request);
 
       return json(edit)
+    case 'delete':
+      const del = await DeleteCategory(String(values.id), request);
+
+      return json(del)
     default:
-      throw 'No action provided'
+      return 'No action provided'
   }
 }

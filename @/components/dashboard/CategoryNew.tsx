@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { DashboardData } from "@/types/dashboard";
-import { Form, useLoaderData } from "@remix-run/react";
+import { Form, Link, useLoaderData } from "@remix-run/react";
 import { BookmarkPlus } from "lucide-react";
 import { useEffect, useRef } from "react";
 
@@ -34,7 +34,9 @@ export default function({
           {categories && (
             <div className="mt-5 flex gap-2 flex-wrap">
               {categories.map((category) => (
-                <Badge variant="secondary" key={category.id}>{category.title}</Badge>
+                <Link to="categories"  key={category.id}>
+                  <Badge variant="secondary" className="cursor-pointer">{category.title}</Badge>
+                </Link>
               ))}
             </div>
           )}

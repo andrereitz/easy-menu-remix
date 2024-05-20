@@ -6,12 +6,14 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DeleteAlert } from "./DeleteItemAlert";
+import MenuItemEdit from "./MenuItemEdit";
 
 export default function MenuItems() {
   const [ loading, setLoading ] = useState<boolean>(true);
   const [ items, setItems ] = useState<MenuItem[]>([]);
   const { config, categories } = useLoaderData<DashboardData>();
-  const navigate = useNavigate()
+  const [ editItemOpen, setEditItemOpen ] = useState<boolean>(false) 
+  const [ edittingItem, setEdittingItem ] = useState<MenuItem | null>(null) 
 
   async function loadMenuItems() {
     try {
@@ -28,7 +30,7 @@ export default function MenuItems() {
         throw resp
       }
     } catch(err) {
-      console.log('menu items error', err)
+      console.log(err)
     } finally {
       setLoading(false)
     }
@@ -67,13 +69,22 @@ export default function MenuItems() {
               <span className="ml-2 mr-auto font-semibold">
                 ${item.price.toFixed(2)}
               </span>
-              <Button variant="ghost" size="icon"><Edit2 size={18} /></Button>
+              <Button variant="ghost" size="icon" onClick={() => {
+                  setEditItemOpen(true)
+                  setEdittingItem(item)
+                }}
+              >
+                <Edit2 size={18} />
+              </Button>
               <DeleteAlert id={item.id} />
             </div>
           </div>
         )
       )) : (
         'Error fetching menu items'
+      )}
+      {edittingItem && (
+        <MenuItemEdit open={editItemOpen} onClose={() => setEditItemOpen(false)} data={edittingItem} />
       )}
     </div>
   )

@@ -14,15 +14,12 @@ import {
 import { BookmarkPlus, FilePlus2, PlusIcon, Tag, Tags } from "lucide-react"
 import { useState } from "react"
 import { Button } from "../ui/button"
-import { MenuItemNew, CategoryNew, CategoryEdit } from "./"
-import { CategoryDataEdit } from "@/types/dashboard"
+import { MenuItemNew, CategoryNew } from "./"
 import { Link } from "@remix-run/react"
 
 export default function(){
   const [newItemOpen, setNewItemOpen] = useState<boolean>(false);
   const [newCategoryOpen, setNewCategoryOpen] = useState<boolean>(false);
-  const [editCategoryOpen, setEditCategoryOpen] = useState<boolean>(false);
-  const [editCategoryData, setEditCategoryData] = useState<CategoryDataEdit | null>(null);
 
   return(
     <>
