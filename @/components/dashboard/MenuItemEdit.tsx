@@ -35,7 +35,7 @@ export default function({
     } else {
       setEditCategory(false)
     }
-  }, [data, open])
+  }, [open])
 
   async function uploadFile(e: FormEvent) {
     const formData = new FormData();
@@ -58,8 +58,6 @@ export default function({
       } else {
         throw upload;
       }
-
-      console.log(upload)
 
     } catch(err) {
       console.log(err)

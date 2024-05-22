@@ -1,17 +1,5 @@
-export interface UserInfo {
-  id: number
-  email: string,
-  business_color: string,
-  business_logo: string,
-  business_name: string, 
-  business_url: string,
-  business_qr?: string,
-  api_url: string
-}
-
-export interface AppConfig {
-  api_url?: string
-}
+import { AppConfig } from "./global"
+import { UserInfo } from "./user"
 
 export interface CategoryData {
   id: number,

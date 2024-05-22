@@ -1,7 +1,7 @@
 import { Edit, Link as LinkIcon } from "lucide-react";
 import { PropsWithChildren } from "react";
-import { DashboardData, UserInfo } from "../../types/dashboard";
-import { Link, useLoaderData } from "@remix-run/react";
+import { DashboardData } from "../../types/dashboard";
+import { Link, useLoaderData, useNavigate } from "@remix-run/react";
 import { Button } from "../ui/button";
 
 export default function BusinessInfo() {
@@ -14,6 +14,8 @@ export default function BusinessInfo() {
     business_url,
     business_qr
   } = loaderData && loaderData.user;
+
+  const navigate = useNavigate()
 
   return (
     <div className="w-full py-8 bg-slate-50">
@@ -31,7 +33,7 @@ export default function BusinessInfo() {
           <BusinessInfoItem title="account email">
             {email}
           </BusinessInfoItem>
-          <Button className="mt-4 gap-3" variant="outline">
+          <Button className="mt-4 gap-3" variant="outline" onClick={() => navigate('user/edit')}>
             <Edit size={18} />
             Edit Information
           </Button>
@@ -42,7 +44,9 @@ export default function BusinessInfo() {
               <Link to={business_qr} target="_blank">
                 <img className="w-full max-w-[170px] rounded-md" src={business_qr} />
               </Link>
-              <Link to={`/menu/${business_url}`} className="w-full flex md:justify-end items-center gap-3 mt-3 text-xs"><LinkIcon size={16} />/menu/{business_url}</Link>
+              <Link to={`/menu/${business_url}`} className="w-full flex md:justify-end items-center gap-3 mt-3 text-xs">
+                <LinkIcon size={16} />/menu/{business_url}
+              </Link>
             </>
           )}
         </div>
