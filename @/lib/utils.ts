@@ -12,7 +12,7 @@ export function getToken(request: Request) {
   return token;
 }
 
-export async function isUserLoggedIn(request: Request): Promise<unknown> {
+export async function isUserLoggedIn(request: Request): Promise<Boolean> {
   const token = getToken(request);
   if(!token) return new Promise((_, rej) => rej(false));
 
@@ -26,5 +26,5 @@ export async function isUserLoggedIn(request: Request): Promise<unknown> {
     headers: { Cookie: cookies }
   })
 
-  return response
+  return response.status === 200
 }

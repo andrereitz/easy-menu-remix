@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { Textarea } from "@/components/ui/textarea";
 import { DashboardData, MenuItem } from "@/types/dashboard";
 import { Form, useLoaderData } from "@remix-run/react";
-import { Delete, ListEnd, X } from "lucide-react";
+import { Delete, ListEnd, Trash2Icon } from "lucide-react";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
@@ -107,8 +107,9 @@ export default function({
               <Badge 
                 className="absolute cursor-pointer top-0 right-0 h-7 w-7 justify-center items-center p-1"
                 onClick={removeImage}
+                variant="destructive"
               >
-                <X size={22} />
+                <Trash2Icon size={22} />
               </Badge>
             </div>
           )}
@@ -120,7 +121,9 @@ export default function({
           )}
 
           {imageLoading && (
-            <LoadingSpinner />
+            <AspectRatio ratio={16/9} className="flex items-center justify-center bg-slate-100">
+              <LoadingSpinner />
+            </AspectRatio>
           )}
           <Form method="POST" reloadDocument>
             <Input type="hidden" name="id" value={data.id} />

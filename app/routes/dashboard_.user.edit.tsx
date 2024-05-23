@@ -7,50 +7,86 @@ import { UserLoaderData } from "@/types/user";
 import { LoaderFunctionArgs, redirect } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
 import { EditIcon, ImageIcon, SaveIcon, X } from "lucide-react";
-import { ColorResult, SketchPicker } from "@hello-pangea/color-picker"
-import { RefObject, useRef, useState } from "react";
+import { ColorResult, SketchPicker } from "@hello-pangea/color-picker";
+import { useRef, useState } from "react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/components/ui/popover";
 
 export default function EditUser() {
-  const {config, data} = useLoaderData<UserLoaderData>()
+  const { config, data } = useLoaderData<UserLoaderData>()
+  const logoInputRef = useRef<HTMLInputElement>(null)
   const colorInputRef = useRef<HTMLInputElement>(null)
-  const [businessColorChange, setBusinessColorChage] = useState<string | null>(data.business_color)
+  const [ businessColorChange, setBusinessColorChage ] = useState<string | null>(data.business_color)
 
   console.log(config, data)
 
-  function removeImage() {
+  async function removeImage() {
+    const response = await fetch(`${config.api_url}/user/logo/delete`, {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors'
+    })
 
+    console.log(response)
   }
 
-  function updateColor(colors: ColorResult) {
-    setBusinessColorChage(colors.hex)
+  async function uploadLogo() {
+    if(!logoInputRef.current?.files) return false;
+
+    const formData = new FormData()
+    formData.append('logo', logoInputRef.current?.files[0])
+
+    try{
+      const response = await fetch(`${config.api_url}/user/logo/add`, {
+        method: 'POST',
+        credentials: 'include',
+        mode: 'cors',
+        body: formData
+      })
+
+      if(response.status === 200) {
+        const json = await response.json()
+
+        console.log(json)
+      } else {
+        throw response;
+      }
+    } catch(err) {
+      console.log(err)
+    }
   }
+
   return(
     <>
       <Navbar />
-      {data.business_logo && (
-        <div className="container max-w-[600px] flex justify-center mt-5 mb-3">
-          <div className="relative max-w-[200px] group">
-            <img src={`${config.api_url}/${data.business_logo}`} className="object-contain max-w-[200px]" />
-            <Badge
-              variant="destructive" 
-              className="absolute cursor-pointer top-0 right-0 h-7 w-7 justify-center items-center p-1 opacity-0 group-hover:opacity-100 transition-all"
-              onClick={removeImage}
+      <div className="container max-w-[600px] flex justify-center mt-5 mb-3">
+        {data.business_logo && (
+            <div className="relative max-w-[200px] group">
+              <img src={`${config.api_url}/${data.business_logo}`} className="object-contain max-w-[200px]" />
+              <Badge
+                variant="destructive" 
+                className="absolute cursor-pointer top-0 right-0 h-7 w-7 justify-center items-center p-1 opacity-0 group-hover:opacity-100 transition-all"
+                onClick={removeImage}
+              >
+                <X size={22} />
+              </Badge>
+            </div>
+        )}
+        {!data.business_logo &&(
+          <>
+            <Button 
+              className="flex gap-3"
+              onClick={() => logoInputRef.current?.click()}
             >
-              <X size={22} />
-            </Badge>
-          </div>
-        </div>
-      )}
-      {!data.business_logo &&(
-        <Button>
-          <ImageIcon /> Add business logo
-        </Button>
-      )}
+              <ImageIcon /> Add business logo
+            </Button>
+            <input ref={logoInputRef} id="logo_input" type="file" style={{ display: "none"}} onChange={uploadLogo} />
+          </>
+        )}
+      </div>
       <div className="container max-w-[600px] bg-slate-50 rounded-md py-3 px-8 mt-5">
         <Form>
           <div className="mt-4 flex flex-wrap items-center gap-3">
@@ -62,6 +98,7 @@ export default function EditUser() {
               value={businessColorChange || ""}
               style={{ backgroundColor: businessColorChange || 'white' }}
               className="max-w-[150px] m-0"
+              readOnly
             />
           <Popover>
             <PopoverTrigger asChild>

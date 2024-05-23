@@ -5,13 +5,11 @@ import { DashboardData } from "@/types/dashboard";
 import { ActionsMenu } from "@/components/dashboard";
 import { AddCategory, AddMenuItem, DeleteMenuItem, EditMenuItem } from "~/actions/dashboardActions";
 import { Navbar } from "@/components/Navbar";
+import { isUserLoggedIn } from "@/lib/utils";
 
 export default function dashboard() {
   const actionData = useActionData();
   const loaderData = useLoaderData<DashboardData>();
-
-  console.log('### action data', actionData)
-  console.log('### loader data', loaderData)
 
   return (
     <>
@@ -31,6 +29,17 @@ export async function loader({request}: LoaderFunctionArgs) {
   pageData.config.api_url = process.env.API_URL
 
   try {
+    const authorized = await isUserLoggedIn(request)
+
+    if(!authorized) {
+      throw authorized;
+    }
+  } catch(err) {
+
+    return redirect('/logout')
+  }
+
+  try {
     const cookie = request.headers.get('cookie');
     if(!cookie) return redirect("/");
 
@@ -48,6 +57,7 @@ export async function loader({request}: LoaderFunctionArgs) {
       pageData.user = json
 
     } else {
+
       throw resp;
     }
 
@@ -60,13 +70,15 @@ export async function loader({request}: LoaderFunctionArgs) {
     if(categoryReponse.status === 200) {
       const json = await categoryReponse.json();
 
-      pageData.categories = json
+      pageData.categories = json;
+
     } else {
+
       throw categoryReponse;
     }
 
   } catch(err) {
-    console.log(err)
+
     throw err
   }
 
