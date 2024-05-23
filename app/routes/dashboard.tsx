@@ -85,7 +85,7 @@ export async function loader({request}: LoaderFunctionArgs) {
   return pageData
 }
 
-export async function action({ request, response }: ActionFunctionArgs) {
+export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
   const values = Object.fromEntries(formData);
   const action = formData.get('action');
@@ -105,7 +105,6 @@ export async function action({ request, response }: ActionFunctionArgs) {
 
     case 'edit':
       const edit = await EditMenuItem(String(values.id), formData, request);
-      console.log('### values', values)
 
       return json(edit);
 
