@@ -7,8 +7,9 @@ import { AddCategory, AddMenuItem, DeleteMenuItem, EditMenuItem } from "~/action
 import { Navbar } from "@/components/Navbar";
 import { isUserLoggedIn } from "@/lib/utils";
 
+import { ToastContainerConfig } from "@/components/dashboard/ToastContainerConfig";
+
 export default function dashboard() {
-  const actionData = useActionData();
   const loaderData = useLoaderData<DashboardData>();
 
   return (
@@ -20,6 +21,7 @@ export default function dashboard() {
       <MenuItems />
       <ActionsMenu />
       <Outlet />
+      <ToastContainerConfig />
     </>
   )
 }
