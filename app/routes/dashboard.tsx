@@ -3,11 +3,12 @@ import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from "@remix-r
 import { BusinessInfo, MenuItems } from "@/components/dashboard";
 import { DashboardData } from "@/types/dashboard";
 import { ActionsMenu } from "@/components/dashboard";
-import { AddCategory, AddMenuItem, DeleteMenuItem, EditMenuItem } from "~/actions/dashboardActions";
+import { AddMenuItem, DeleteMenuItem, EditMenuItem } from "~/actions/dashboardActions";
 import { Navbar } from "@/components/Navbar";
 import { isUserLoggedIn } from "@/lib/utils";
 
 import { ToastContainerConfig } from "@/components/dashboard/ToastContainerConfig";
+import { AddCategory } from "~/actions/dashboardCategoriesActions";
 
 export default function dashboard() {
   const loaderData = useLoaderData<DashboardData>();

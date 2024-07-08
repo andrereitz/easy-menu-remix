@@ -6,9 +6,9 @@ import { Label } from "@/components/ui/label";
 import { UserLoaderData } from "@/types/user";
 import { ActionFunction, ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from "@remix-run/node";
 import { Form, useActionData, useLoaderData, useNavigate } from "@remix-run/react";
-import { EditIcon, ImageIcon, SaveIcon, Trash2Icon, X } from "lucide-react";
+import { EditIcon, ImageIcon, SaveIcon, Trash2Icon } from "lucide-react";
 import { ColorResult, SketchPicker } from "@hello-pangea/color-picker";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
   Popover,
   PopoverContent,
@@ -20,13 +20,14 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@/components/ui/tabs"
+} from "@/components/ui/tabs";
 import { toast } from "react-toastify";
 import { ToastContainerConfig } from "@/components/dashboard/ToastContainerConfig";
 import { updateAccount, updateBusiness } from "~/actions/dashboardUserActions";
+import { useNotify } from "@/hooks/useNotify";
 
 export default function EditUser() {
-  const actionData = useActionData<ActionFunction>()
+  const action = useActionData<ActionFunction>()
   const { config, data } = useLoaderData<UserLoaderData>()
   const logoInputRef = useRef<HTMLInputElement>(null)
   const colorInputRef = useRef<HTMLInputElement>(null)
@@ -34,16 +35,7 @@ export default function EditUser() {
   const [ businessColorChange, setBusinessColorChage ] = useState<string | null>(data.business_color)
   const navigate = useNavigate();
 
-  useEffect(() => {
-    console.log('actiondata', actionData)
-    if(actionData && actionData.status == 'error') {
-      toast.error(actionData.message)
-    }
-
-    if(actionData && actionData.status == 'success') {
-      toast.success(actionData.message)
-    }
-  }, [actionData])
+  useNotify(action)
 
   async function removeLogo() {
     setBusinessLogoLoading(true);

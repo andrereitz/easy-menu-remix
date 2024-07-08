@@ -1,21 +1,29 @@
-import { redirect, useLoaderData } from "@remix-run/react";
+import { redirect, useActionData, useLoaderData } from "@remix-run/react";
 import { CategoryData } from "@/types/dashboard";
-import { LoaderFunctionArgs, json } from "@remix-run/node";
+import { ActionFunction, LoaderFunctionArgs, json } from "@remix-run/node";
 import { Badge } from "@/components/ui/badge";
-import { CategoryEdit } from "@/components/dashboard";
+import { CategoryEdit, CategoryNew } from "@/components/dashboard";
 import { useState } from "react";
-import { DeleteCategory, EditCategory } from "~/actions/dashboardCategoriesActions";
+import { DeleteCategory, EditCategory, AddCategory } from "~/actions/dashboardCategoriesActions";
 import { Navbar } from "@/components/Navbar";
+import { useNotify } from "@/hooks/useNotify";
+import { ToastContainerConfig } from "@/components/dashboard/ToastContainerConfig";
+import { Button } from "@/components/ui/button";
+import { BookmarkPlus } from "lucide-react";
 
 export default function dashboard() {
+  const action = useActionData<ActionFunction>()
   const categories = useLoaderData<CategoryData[]>();
+  const [newCategoryOpen, setNewCategoryOpen] = useState<boolean>(false)
   const [categoryEdit, setCategoryEdit] = useState<CategoryData | null>(null)
+  
+  useNotify(action)
 
   return (
     <>
       <Navbar />
       <div className="container flex justify-center mt-5">
-        <div className="flex gap-2 max-w-[600px]">
+        <div className="flex gap-2 max-w-[600px] flex-wrap">
           {categories.map((category: CategoryData) => (
             <Badge key={category.id} onClick={() => setCategoryEdit(category)} className="cursor-pointer p-2">
               {category.title}
@@ -23,7 +31,12 @@ export default function dashboard() {
           ))}
         </div>
       </div>
+      <Button className="rounded-full fixed bottom-4 right-4" size="icon" onClick={() => setNewCategoryOpen(true)}>
+        <BookmarkPlus className="h-4 w-4" />
+      </Button>
       <CategoryEdit open={categoryEdit != null} onClose={() => setCategoryEdit(null)} data={categoryEdit} />
+      <CategoryNew reload={true} open={newCategoryOpen} onClose={() => setNewCategoryOpen(false)} />
+      <ToastContainerConfig />
     </>
   )
 }
@@ -59,15 +72,19 @@ export async function action({ request }: LoaderFunctionArgs) {
   const action = formData.get('action');
 
   switch(action) {
-    case 'edit':
+    case 'editCategory':
       const edit = await EditCategory(formData, String(values.id), request);
 
       return json(edit)
-    case 'delete':
+    case 'deleteCategory':
       const del = await DeleteCategory(String(values.id), request);
 
       return json(del)
+    case 'addCategory':
+      const add = await AddCategory(formData, request)
+
+      return json(add)
     default:
-      return 'No action provided'
+      return json({ message: 'No action provided', status: 'warning' })
   }
 }

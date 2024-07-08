@@ -28,7 +28,7 @@ export default function({
             <Button 
               type="submit" 
               name="action" 
-              value="edit"
+              value="editCategory"
               className="order-1"
             >
               <BookmarkCheck className="mr-2" /> Save Category
@@ -36,7 +36,7 @@ export default function({
             <Button
               variant="destructive"
               name="action"
-              value="delete"
+              value="deleteCategory"
               className="order-0"
             >
               <Trash2 className="mr-2" /> Delete Category

@@ -9,9 +9,11 @@ import { useEffect, useRef } from "react";
 
 export default function({
   open,
+  reload,
   onClose,
 } : {
   open: boolean,
+  reload?: boolean,
   onClose: () => void
 }) {
   const { categories } = useLoaderData<DashboardData>();
@@ -29,7 +31,7 @@ export default function({
         <DialogHeader>
           <DialogTitle>Add category</DialogTitle>
         </DialogHeader>
-        <Form method="POST">
+        <Form method="POST" reloadDocument={reload}>
           <Input required type="text" placeholder="Title" name="title" ref={inputRef}></Input>
           {categories && (
             <div className="mt-5 flex gap-2 flex-wrap">

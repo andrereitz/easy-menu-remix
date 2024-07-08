@@ -27,3 +27,8 @@ export interface MenuItem {
   user: number,
   mediaid?: number
 }
+
+export interface ActionPayload {
+  status: string,
+  message: string
+}
