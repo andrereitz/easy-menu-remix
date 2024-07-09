@@ -1,6 +1,17 @@
-# Welcome to Remix + Vite!
+# Easy Menu Remix
 
-📖 See the [Remix docs](https://remix.run/docs) and the [Remix Vite docs](https://remix.run/docs/en/main/guides/vite) for details on supported features.
+This is a frontend for the [easy-menu-go](https://github.com/andrereitz/easy-menu-go) project. Same implementation from [python](https://github.com/andrereitz/easy-menu) but in a go server.
+
+# Node
+
+Node should be v20+ since previous node versions have default resoluton for IPV6 first (localhost tries to access ::1)
+This makes the development with secure cookies simplier since you can make serverside requests with localhost that would be mapped to 127.0.0.1 on the go server
+
+Alternativly you can set dns resolution to IPV4 using the following code in a the entry file:
+```
+import dns from 'node:dns';
+dns.setDefaultResultOrder('ipv4first');
+```
 
 ## Development
 

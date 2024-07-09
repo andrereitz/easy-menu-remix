@@ -22,7 +22,7 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs";
 import { toast } from "react-toastify";
-import { ToastContainerConfig } from "@/components/dashboard/ToastContainerConfig";
+import { ToastContainerConfig } from "@/components/shared/ToastContainerConfig";
 import { updateAccount, updateBusiness } from "~/actions/dashboardUserActions";
 import { useNotify } from "@/hooks/useNotify";
 

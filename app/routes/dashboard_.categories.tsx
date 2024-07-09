@@ -7,7 +7,7 @@ import { useState } from "react";
 import { DeleteCategory, EditCategory, AddCategory } from "~/actions/dashboardCategoriesActions";
 import { Navbar } from "@/components/Navbar";
 import { useNotify } from "@/hooks/useNotify";
-import { ToastContainerConfig } from "@/components/dashboard/ToastContainerConfig";
+import { ToastContainerConfig } from "@/components/shared/ToastContainerConfig";
 import { Button } from "@/components/ui/button";
 import { BookmarkPlus } from "lucide-react";
 

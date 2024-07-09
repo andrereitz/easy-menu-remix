@@ -7,7 +7,7 @@ import { AddMenuItem, DeleteMenuItem, EditMenuItem } from "~/actions/dashboardAc
 import { Navbar } from "@/components/Navbar";
 import { isUserLoggedIn } from "@/lib/utils";
 
-import { ToastContainerConfig } from "@/components/dashboard/ToastContainerConfig";
+import { ToastContainerConfig } from "@/components/shared/ToastContainerConfig";
 import { AddCategory } from "~/actions/dashboardCategoriesActions";
 
 export default function dashboard() {
