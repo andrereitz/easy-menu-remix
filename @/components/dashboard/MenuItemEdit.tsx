@@ -166,7 +166,7 @@ export default function({
               </div>
             )}
           <DialogFooter>
-            <Button type="submit" size="lg" className="mt-5" name="action" value="edit">
+            <Button type="submit" size="lg" className="mt-5" name="action" value="EditMenuItem">
               <ListEnd className="mr-2" />Save Item
             </Button>
           </DialogFooter>

@@ -30,5 +30,5 @@ export interface MenuItem {
 
 export interface ActionPayload {
   status: string,
-  message: string
+  message?: string
 }

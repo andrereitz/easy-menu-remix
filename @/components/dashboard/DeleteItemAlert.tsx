@@ -47,7 +47,7 @@ export function DeleteAlert({
             <AlertDialogAction 
               type="submit"
               name="action"
-              value="delete"
+              value="DeleteMenuItem"
               className="bg-primary-default"
             >
               Continue

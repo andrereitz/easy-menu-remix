@@ -16,16 +16,20 @@ export async function AddMenuItem(payload: FormData, request: Request) {
     if(resp.status === 200) {
       const json = await resp.json()
 
-      return json;
+      return {
+        status: 'success',
+        message: json.message
+      };
     } else {
       throw resp;
     }
+
   } catch(err) {
     const text = await (err as Response).text();
 
     return {
-      message: text,
-      status: 'danger'
+      status: 'error',
+      message: text || 'Error Deletting!'
     }
   }
 }
@@ -46,16 +50,20 @@ export async function DeleteMenuItem(payload: string, request: Request) {
     if(resp.status === 200) {
       const json = await resp.json()
 
-      return json;
+      return {
+        status: 'success',
+        message: json.message
+      };
     } else {
       throw resp;
     }
+    
   } catch(err) {
     const text = await (err as Response).text();
 
     return {
-      message: text,
-      status: 'danger'
+      status: 'error',
+      message: text || 'Error Deletting!'
     }
   }
 }
@@ -73,7 +81,24 @@ export async function EditMenuItem(id: string, payload: FormData, request: Reque
         Cookie: cookie
       }
     })
-  } catch(err) {
 
+    if(resp.status === 200) {
+      const json = await resp.json()
+
+      return {
+        status: 'success',
+        message: json.message
+      };
+    } else {
+      throw resp;
+    }
+
+  } catch(err) {
+    const text = await (err as Response).text();
+
+    return {
+      status: 'error',
+      message: text || 'Error editting!'
+    }
   }
 }

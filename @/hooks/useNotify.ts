@@ -2,7 +2,7 @@ import { ActionPayload } from "@/types/dashboard"
 import { useEffect } from "react"
 import { toast } from "react-toastify"
 
-export const useNotify = (action: ActionPayload) => {
+export const useNotify = (action?: ActionPayload) => {
   useEffect(() => {
     if(action && action.message) {
       switch (action.status) {

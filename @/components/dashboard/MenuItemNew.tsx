@@ -47,7 +47,7 @@ export default function NewMenuItem({
               </div>
             )}
           <DialogFooter>
-            <Button type="submit" size="lg" className="mt-5" name="action" value="add">
+            <Button type="submit" size="lg" className="mt-5" name="action" value="AddMenuItem">
               <ListPlusIcon className="mr-2" />Add Item
             </Button>
           </DialogFooter>

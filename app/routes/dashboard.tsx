@@ -1,7 +1,7 @@
 import { Outlet, useActionData, useLoaderData } from "@remix-run/react";
 import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from "@remix-run/node";
 import { BusinessInfo, MenuItems } from "@/components/dashboard";
-import { DashboardData } from "@/types/dashboard";
+import { ActionPayload, DashboardData } from "@/types/dashboard";
 import { ActionsMenu } from "@/components/dashboard";
 import { AddMenuItem, DeleteMenuItem, EditMenuItem } from "~/actions/dashboardActions";
 import { Navbar } from "@/components/Navbar";
@@ -9,9 +9,13 @@ import { isUserLoggedIn } from "@/lib/utils";
 
 import { ToastContainerConfig } from "@/components/shared/ToastContainerConfig";
 import { AddCategory } from "~/actions/dashboardCategoriesActions";
+import { useNotify } from "@/hooks/useNotify";
 
 export default function dashboard() {
   const loaderData = useLoaderData<DashboardData>();
+  const actionData = useActionData<ActionPayload>();
+
+  useNotify(actionData)
 
   return (
     <>
@@ -96,22 +100,22 @@ export async function action({ request }: ActionFunctionArgs) {
   if (!action) return;
 
   switch(action) {
-    case 'add':
+    case 'AddMenuItem':
       const add = await AddMenuItem(formData, request);
 
       return json(add);
 
-    case 'delete':
+    case 'DeleteMenuItem':
       const del = await DeleteMenuItem(String(values.id), request);
 
       return json(del);
 
-    case 'edit':
+    case 'EditMenuItem':
       const edit = await EditMenuItem(String(values.id), formData, request);
 
       return json(edit);
 
-    case 'addCategory':
+    case 'AddCategory':
       const addCategory = await AddCategory(formData, request);
 
       return addCategory
