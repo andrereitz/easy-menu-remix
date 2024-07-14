@@ -1,7 +1,8 @@
-import { MenuItem } from "@/types/dashboard"
-import { UserInfo } from "@/types/user"
-import { json, LoaderFunctionArgs } from "@remix-run/node"
-import { useLoaderData, useParams } from "@remix-run/react"
+import { Button } from "@/components/ui/button"
+import { CategoryData, MenuItem } from "@/types/dashboard"
+import { AspectRatio } from "@radix-ui/react-aspect-ratio"
+import { LoaderFunctionArgs } from "@remix-run/node"
+import { useLoaderData } from "@remix-run/react"
 
 interface MenuBusinessInfo {
   id: number,
@@ -13,28 +14,67 @@ interface MenuBusinessInfo {
 interface MenuPageData {
   business: MenuBusinessInfo,
   items: MenuItem[],
+  categories: CategoryData[],
   config: Record<string, string | undefined>
 }
 
 export default function menu() {
-  const loaderData = useLoaderData<MenuPageData>()
+  const { business, items, categories, config } = useLoaderData<MenuPageData>()
 
-  console.log(loaderData)
   return (
     <div>
-      <img src={`${loaderData.config.api_url}/${loaderData.business.logo}`} />
-      this is menu
-      {loaderData.items.length > 0 ? loaderData.items.map((item) => (
-        <div>{item.title}</div>
-      )) : (
-        <div></div>
-      )}
+      <div>
+        <div className="flex justify-center">
+          <img src={`${config.api_url}/${business.logo}`} className="max-w-[250px] max-h-[200px] py-3" />
+        </div>
+        {categories && (
+          <nav className="flex justify-center sticky top-0">
+            <ul className="flex gap-3">
+              {categories.map(category => (
+                // <li key={category.id} className="p-3 rounded-md bg-slate-100">
+                //   {category.title}
+                // </li>
+                <Button key={category.id}>{category.title}</Button>
+              ))}
+            </ul>
+          </nav>
+        )}
+      </div>
+      <div className="container mx-auto max-w-[800px]">
+        {categories.map(category => (
+          <div key={`section-${category.id}`} className="flex flex-col">
+            <h2 className="text-2xl px-3 pt-5 pb-2">{category.title}</h2>
+            <div className="flex flex-col">
+              {items.map(item => {
+                if (item.category !== category.id) return null;
+
+                return (
+                  <div key={item.id} className="flex gap-3 mt-3">
+                    <div className="max-w-[200px] w-full">
+                      <AspectRatio ratio={4/3} className="px-2 pt-2">
+                        <img src={`${config.api_url}/item/image/${item.mediaid}`} className="object-cover w-full h-full rounded-md" />
+                      </AspectRatio>
+                    </div>
+                    <div className="w-full">
+                      <div className="flex gap-2 items-center">
+                        <h3 className="text-lg capitalize font-bold">{item.title}</h3>
+                        <span className="bg-stone-100 flex-1 rounded-full h-[3px] hidden md:block"></span>
+                        <span className="ml-auto font-thin text-lg">${item.price}</span>
+                      </div>
+                      <p className="italic">{item.description}</p>
+                    </div>
+                  </div>
+              )})}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
 
 export async function loader({request, params}: LoaderFunctionArgs) {
-  let pageData = { config: {}, business: {}, items: []} as unknown as MenuPageData;
+  let pageData = { config: {}, business: {}, items: [], categories: []} as unknown as MenuPageData;
   pageData.config.api_url = process.env.API_URL
 
   try {
@@ -42,12 +82,23 @@ export async function loader({request, params}: LoaderFunctionArgs) {
 
     if(resp.status === 200) {
       const data = await resp.json()
+      // let itemsByCategory = [];
+
+      // console.log(data.items)
+      // data.items.map((item: MenuItem) => {
+      //   if (item.category) {
+
+      //   }
+
+      //   return 
+      // })
     
       return {...pageData, ...data}
     } else {
       return resp;
     }
   } catch(err) {
+
     return err;
   }
 }
