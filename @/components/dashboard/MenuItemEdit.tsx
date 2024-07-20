@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { InputValidator } from "@/components/ui/inputValidator";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { DashboardData, MenuItem } from "@/types/dashboard";
@@ -11,6 +12,10 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { LoadingSpinner } from "../LoadingSpinner";
+
+import { ValidatedForm } from "remix-validated-form";
+import { withZod } from "@remix-validated-form/with-zod";
+import { z } from "zod";
 
 export default function({
   open,
@@ -24,7 +29,7 @@ export default function({
   const { categories, config } = useLoaderData<DashboardData>();
   const [ editCategory, setEditCategory ] = useState<boolean>(false);
   const [ imageLoading, setImageLoading ] = useState<boolean>(false)
-  const [ imageId, setImageId ] = useState<number | undefined>(data.mediaid)
+  const [ imageId, setImageId ] = useState<number | undefined>()
   const imageFieldRef = useRef<any>(null)
 
   const itemCategory = categories.find(category => category.id === data.category);
@@ -35,6 +40,8 @@ export default function({
     } else {
       setEditCategory(false)
     }
+
+    setImageId(data.mediaid)
   }, [open])
 
   async function uploadFile(e: FormEvent) {
@@ -89,6 +96,14 @@ export default function({
       setImageLoading(false)
     }
   }
+
+  const validator = withZod(z.object({
+    title: z
+      .string()
+      .min(3, "Title must have at least 3 characters"),
+    description: z.string(),
+    price: z.string().refine((field) => /\d+\.\d{2}/.test(field), 'Price must be in the format 10.99')
+  }))
   
   return(
     <Dialog open={open} onOpenChange={() => onClose()}>
@@ -125,11 +140,11 @@ export default function({
               <LoadingSpinner />
             </AspectRatio>
           )}
-          <Form method="POST" reloadDocument>
+          <ValidatedForm validator={validator} method="POST" onSubmit={() => onClose()}>
             <Input type="hidden" name="id" value={data.id} />
             <div className="grid w-full max-w-sm items-center">
               <Label htmlFor="title">Title</Label>
-              <Input type="text" defaultValue={data.title} name="title" id="title"></Input>
+              <InputValidator type="text" defaultValue={data.title} name="title" id="title"></InputValidator>
             </div>
             <div className="grid w-full max-w-sm items-center mt-4">
               <Label htmlFor="description">Description</Label>
@@ -137,7 +152,7 @@ export default function({
             </div>
             <div className="grid w-full max-w-sm items-center mt-4">
               <Label htmlFor="price">Price</Label>
-              <Input type="text" defaultValue={String(data.price)} name="price" id="price" required></Input>
+              <InputValidator type="text" defaultValue={String(data.price.toFixed(2))} name="price" id="price" required></InputValidator>
             </div>
             {!editCategory && (
               <Badge 
@@ -170,7 +185,7 @@ export default function({
               <ListEnd className="mr-2" />Save Item
             </Button>
           </DialogFooter>
-        </Form>
+        </ValidatedForm>
       </DialogContent>
     </Dialog>
   )

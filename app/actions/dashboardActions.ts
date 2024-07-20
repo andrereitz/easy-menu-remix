@@ -29,7 +29,7 @@ export async function AddMenuItem(payload: FormData, request: Request) {
 
     return {
       status: 'error',
-      message: text || 'Error Deletting!'
+      message: text || 'Error Adding new item!'
     }
   }
 }

@@ -1,10 +1,11 @@
 import { ActionFunctionArgs, LoaderFunction, LoaderFunctionArgs, MetaFunction, json, redirect } from "@remix-run/node";
-import { Form, Link, useActionData, useLoaderData } from "@remix-run/react";
+import { Form, Link, useActionData } from "@remix-run/react";
 import { Logo } from "~/assets/svg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ShieldAlert } from "lucide-react";
 import { getToken } from "@/lib/utils";
+
 
 export const meta: MetaFunction = () => {
   return [
@@ -13,11 +14,10 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Login() {
-  // const data = useLoaderData();
   const actionData = useActionData<typeof action>();
 
   return(
-    <div className="container-sm max-w-lg mx-auto p-5 bg-slate-200 mt-10 rounded-md">
+    <div className="container-sm max-w-lg mx-auto p-5 bg-slate-100 mt-10 rounded-md">
       <Link to="/" className="flex justify-center pb-3 text-primary-default">
         <Logo />
       </Link>

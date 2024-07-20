@@ -1,6 +1,6 @@
 import { MetaFunction, TypedResponse, json, redirect } from "@remix-run/node";
 import { Form, Link, useActionData, useLoaderData } from "@remix-run/react";
-import { Logo, IconError } from "~/assets/svg";
+import { Logo } from "~/assets/svg";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

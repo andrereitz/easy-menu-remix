@@ -25,7 +25,7 @@ export default function Index() {
           <h1 className="text-primary-default font-bold text-3xl">Easily create your business menu</h1>
           <p className="pt-3 pb-5">With easy menu you can better server your clients with a custom digital menu. Create your account, add your menu items, generate a qr code and you are done.</p>
           <div className="pt-4 flex md:justify-center">
-            <Button variant="default" className="mr-3" size="lg">Register</Button>
+            <Button onClick={() => window.location.href = "/register" } variant="default" className="mr-3" size="lg">Register</Button>
             <Button onClick={() => window.location.href = "/login" } variant="outline" size="lg">Login</Button>
           </div>
         </div>
