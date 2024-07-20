@@ -2,7 +2,12 @@
 
 This is a frontend for the [easy-menu-go](https://github.com/andrereitz/easy-menu-go) project. Same implementation from [python](https://github.com/andrereitz/easy-menu) but in a go server.
 
-# Node
+## About this project
+
+This is just an experimentation project with Remix since I`ve never used it. Remix is a server side render ready React framework that brings the mental model closer to web standards.
+It offers a great and simple experience for developing SSR applications, and is a great alternative to NextJS
+
+## Node
 
 Node should be v20+ since previous node versions have default resoluton for IPV6 first (localhost tries to access ::1)
 This makes the development with secure cookies simplier since you can make serverside requests with localhost that would be mapped to 127.0.0.1 on the go server
